@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#body_admin').hide();
+    $('#body_seller').hide();
+    $('#body_consumer').hide();
+
+    if(sessionStorage.getItem('loginId')==null){
+        $('#loginb').show();
+        $('#logina').hide();        
+    }else{
+        let loginId = sessionStorage.getItem('loginId');
+        let type = sessionStorage.getItem('type');
+        let title = 'id:'+loginId+' / type:'+type
+        $('#title').text(title);
+        $('#body_'+type).show();
+        $('#loginb').hide();
+        $('#logina').show();
+    }
+});
+$(document).ready(function(){
+    $('#loginf').click(function(){
+        let id = prompt("id", "");
+        let pwd = prompt("pwd", "");
+        $.ajax({
+		url:"http://localhost:8081/login",  //서버주소
+		type:"post",   				//전송방식
+		data:{id:id, pwd:pwd},
+		dataType:'json',			//응답데이터 형태
+		success:function(res){		//응답 정상일때
+            if(res.flag){
+                alert('로그인 성공');
+                sessionStorage.setItem('token', res.token);
+                sessionStorage.setItem('loginId', res.id);
+			    sessionStorage.setItem('type', res.type);
+                location.reload(true);
+            }else{
+                alert('로그인 실패');
+            }
+			
+		},
+		error:function(){			//응답 에러일때
+			alert('error');
+		}
+	});
+    });
+    $('#logout').click(function(){
+        sessionStorage.removeItem('loginId');
+        sessionStorage.removeItem('type');
+        sessionStorage.removeItem('token');
+        location.reload(true);
+    });
+});
+</script>
+</head>
+<body>
+<div id="loginb">
+    <input type="button" value="로그인" id="loginf">
+</div>
+<div id="logina">
+    <h3 id="title"> </h3>
+    <input type="button" value="로그아웃" id="logout">
+    <a href="member/myinfo.html">내정보확인</a><br/>
+    <div id="body"></div>
+</div>
+<div id="body_admin">
+    <h3>관리자 메뉴</h3>
+    <a href="store/list.html">매장목록</a>
+</div>
+<div id="body_seller">
+    <h3>판매자 메뉴</h3>
+</div>
+<div id="body_consumer">
+    <h3>구매자 메뉴</h3>
+</div>
+</body>
+</html>

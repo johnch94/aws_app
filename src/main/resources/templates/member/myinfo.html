@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    let token = sessionStorage.getItem('token');
+    $.ajax({
+		url:"http://localhost:8081/auth/member",  //서버주소
+		type:"get",   				//전송방식
+		headers:{'auth_token':token},
+		dataType:'json',			//응답데이터 형태
+		success:function(res){		//응답 정상일때
+            let txt = '';
+            txt += 'id:'+res.dto.id+'<br/>';
+            txt += 'name:'+res.dto.name+'<br/>';
+            txt += 'email:'+res.dto.email+'<br/>';
+			txt += 'type:'+res.dto.type+'<br/>';
+            $('#info').html(txt);
+		},
+		error:function(){			//응답 에러일때
+			alert('error');
+		}
+	});
+});
+</script>
+</head>
+<body>
+    <h3>내 정보</h3>
+<div id="info">  
+</div>
+
+</body>
+</html>

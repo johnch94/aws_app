@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    let token = sessionStorage.getItem('token');
+    $.ajax({
+		url:"http://localhost:8081/auth/store/list",  //서버주소
+		type:"get",   				//전송방식
+		headers:{'auth_token':token},
+		dataType:'json',			//응답데이터 형태
+		success:function(res){		//응답 정상일때
+            let html = '';
+			for(let s of res.list){
+				let val = '개설';
+				if(s.open){
+					val = '폐점';
+				}
+				html += 'storeid:'+s.storeid+' / sid:'+s.sid.id+' / address:'+s.address;
+				html += '<input type="button" value="'+val+'"><br/>';
+			}
+            $('#list').html(html);
+		},
+		error:function(){			//응답 에러일때
+			alert('error');
+		}
+	});
+});
+</script>
+</head>
+<body>
+    <h3>매장목록</h3>
+<div id="list"></div>
+</body>
+</html>
